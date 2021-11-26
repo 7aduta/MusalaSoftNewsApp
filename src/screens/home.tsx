@@ -1,3 +1,4 @@
+import { title } from "process";
 import React, { useEffect, useState } from "react";
 import {
 	FlatList,
@@ -7,45 +8,46 @@ import {
 	RefreshControl,
 	TextInput,
 	Pressable,
+	Keyboard,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import ArticleBox from "../components/articleBox";
 import { newsApiKey } from "../constants/config";
+import { useTranslation } from 'react-i18next';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import { RootState } from "../store/store";
+import { FilterHomeNewsHandler, GetHomeNewsHandler } from "../store/actions/news";
 
 const Home = () => {
-	const [news, setnews] = useState([]);
+	// const [news, setnews] = useState([]);
 	const [refreshingActive, setrefreshingActive] = useState(false);
 	const [text, settext] = useState("");
+	const { t, i18n } = useTranslation();
+	const dispatch = useDispatch();
+	const {
+      news
+   } = useSelector((state: RootState) => state.news, shallowEqual);
 	useEffect(() => {
-		getNews();
+		dispatch(GetHomeNewsHandler())
+
 	}, []);
-	const getNews = async () => {
-		await fetch(
-			`https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&sortBy=publishedAt&apiKey=${newsApiKey}`
-		)
-			.then((response) => response.json())
-			.then((data) => setnews(data?.articles));
-	};
+	
 	const onChangeText = async (text) => {
 		settext(text);
-		await fetch(
-			`https://newsapi.org/v2/top-headlines?sources=techcrunch${
-				text != "" ? "&q=" + text : ""
-			}&language=en&sortBy=publishedAt&apiKey=${newsApiKey}`
-		)
-			.then((response) => response.json())
-			.then((data) => setnews(data?.articles));
+		dispatch(FilterHomeNewsHandler(text))
+		
 	};
 	const refreshingHandel = () => {
 		setrefreshingActive(true);
-		getNews().then(() => {
+		dispatch(GetHomeNewsHandler(() => {
 			setrefreshingActive(false);
-		});
+		}))
 	};
 	return (
 		<View>
 			<View style={styles.inputContainer}>
 				<TextInput
+					placeholder={t("Search")}
 					style={styles.input}
 					onChangeText={onChangeText}
 					value={text}
@@ -56,7 +58,8 @@ const Home = () => {
 					onPress={() => {
 						if (text != "") {
 							settext("");
-							getNews();
+							Keyboard.dismiss();
+							dispatch(GetHomeNewsHandler())
 						}
 					}}
 				/>
