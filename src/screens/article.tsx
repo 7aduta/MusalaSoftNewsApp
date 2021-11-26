@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import {
 	Text,
 	Image,
@@ -9,12 +9,20 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { RouteProp } from "@react-navigation/native";
 
 const height = Dimensions.get("screen").height;
-const Article = () => {
+interface IArticleBox {
+	title: string;
+  	urlToImage: string;
+  	content: string;
+  	author: string;
+  	publishedAt: Date;
+}
+const Article: FC =  () => {
 	const {
-		params: { item },
-	} = useRoute();
+		params: { title,urlToImage,content ,author,publishedAt},
+	} = useRoute<RouteProp<Record<string, IArticleBox>, string>>();
 	const { goBack } = useNavigation();
 	return (
 		<View>
@@ -24,19 +32,19 @@ const Article = () => {
 			>
 				<Icon name="arrow-left" solid style={styles.backButtonIcon} />
 			</Pressable>
-			<Image source={{ uri: item?.urlToImage }} style={styles.boxImage} />
-			<Text style={styles.heading}>{item.title}</Text>
+			<Image source={{ uri: urlToImage }} style={styles.boxImage} />
+			<Text style={styles.heading}>{title}</Text>
 			<View style={styles.metaBox}>
 				<View style={styles.subBox}>
 					<Icon name="user" solid style={styles.iconStyle} />
-					<Text>{item?.author}</Text>
+					<Text>{author}</Text>
 				</View>
 				<View style={styles.subBox}>
 					<Icon name="calendar-alt" solid style={styles.iconStyle} />
-					<Text>{item?.publishedAt}</Text>
+					<Text>{publishedAt}</Text>
 				</View>
 			</View>
-			<Text style={styles.content}>{item?.content}</Text>
+			<Text style={styles.content}>{content}</Text>
 		</View>
 	);
 };

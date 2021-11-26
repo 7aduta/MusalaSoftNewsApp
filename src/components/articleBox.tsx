@@ -1,16 +1,22 @@
 import { useNavigation } from "@react-navigation/core";
-import React from "react";
+import React, { FC } from "react";
 import { Text, View, StyleSheet, Image, Pressable } from "react-native";
-
-const ArticleBox = (item) => {
+interface IArticleBox {
+	title: string;
+  	urlToImage: string;
+  	content: string;
+  	author: string;
+  	publishedAt: Date;
+}
+const ArticleBox: FC<IArticleBox> = ({title,urlToImage,content,author,publishedAt}) => {
 	const { navigate } = useNavigation();
 	return (
 		<Pressable
-			onPress={() => navigate("Article", { item })}
+			onPress={() => navigate("Article", { title,urlToImage,content ,author,publishedAt})}
 			style={styles.boxConatiner}
 		>
-			<Image source={{ uri: item?.urlToImage }} style={styles.boxImage} />
-			<Text style={styles.heading}>{item?.title}</Text>
+			<Image source={{ uri: urlToImage }} style={styles.boxImage} />
+			<Text style={styles.heading}>{title}</Text>
 		</Pressable>
 	);
 };
