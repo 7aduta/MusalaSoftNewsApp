@@ -1,5 +1,5 @@
 import { title } from "process";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	FlatList,
 	Text,
@@ -12,18 +12,19 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import ArticleBox from "../components/articleBox";
-import { newsApiKey } from "../constants/config";
 import { useTranslation } from 'react-i18next';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import { RootState } from "../store/store";
 import { FilterHomeNewsHandler, GetHomeNewsHandler } from "../store/actions/news";
+import { ThemeContext } from '../constants/theming';
 
 const Home = () => {
-	// const [news, setnews] = useState([]);
 	const [refreshingActive, setrefreshingActive] = useState(false);
 	const [text, settext] = useState("");
-	const { t, i18n } = useTranslation();
+	const { t} = useTranslation();
 	const dispatch = useDispatch();
+	const {  theme} = useContext(ThemeContext);
+
 	const {
       news
    } = useSelector((state: RootState) => state.news, shallowEqual);
@@ -44,17 +45,19 @@ const Home = () => {
 		}))
 	};
 	return (
-		<View>
-			<View style={styles.inputContainer}>
+		<View style={[styles.container,{backgroundColor: theme.backgroundColor}]}>
+			<View style={[styles.inputContainer,{borderColor: theme.color}]}>
 				<TextInput
 					placeholder={t("Search")}
-					style={styles.input}
+					placeholderTextColor={theme.color}
+					style={[styles.input,]}
 					onChangeText={onChangeText}
 					value={text}
 				/>
 				<Icon
 					name={text == "" ? "search" : "times"}
-					style={styles.Icon}
+					color={theme.color}
+					style={[styles.Icon]}
 					onPress={() => {
 						if (text != "") {
 							settext("");

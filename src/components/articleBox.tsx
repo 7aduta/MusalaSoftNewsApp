@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/core";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { Text, View, StyleSheet, Image, Pressable } from "react-native";
+import { ThemeContext } from "../constants/theming";
 interface IArticleBox {
 	title: string;
   	urlToImage: string;
@@ -10,13 +11,15 @@ interface IArticleBox {
 }
 const ArticleBox: FC<IArticleBox> = ({title,urlToImage,content,author,publishedAt}) => {
 	const { navigate } = useNavigation();
+		const {theme} = useContext(ThemeContext);
+
 	return (
 		<Pressable
 			onPress={() => navigate("Article", { title,urlToImage,content ,author,publishedAt})}
-			style={styles.boxConatiner}
+			style={[styles.boxConatiner,{backgroundColor:theme.backgroundCard}]}
 		>
 			<Image source={{ uri: urlToImage }} style={styles.boxImage} />
-			<Text style={styles.heading}>{title}</Text>
+			<Text style={[styles.heading,{color:theme.color}]}>{title}</Text>
 		</Pressable>
 	);
 };

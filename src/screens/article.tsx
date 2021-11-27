@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import {
 	Text,
 	Image,
@@ -10,6 +10,7 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/core";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { RouteProp } from "@react-navigation/native";
+import { ThemeContext } from "../constants/theming";
 
 const height = Dimensions.get("screen").height;
 interface IArticleBox {
@@ -24,31 +25,37 @@ const Article: FC =  () => {
 		params: { title,urlToImage,content ,author,publishedAt},
 	} = useRoute<RouteProp<Record<string, IArticleBox>, string>>();
 	const { goBack } = useNavigation();
+			const {  theme} = useContext(ThemeContext);
+
 	return (
-		<View>
+		<View style={[styles.container,{backgroundColor: theme.backgroundColor}]}>
 			<Pressable
 				onPress={() => goBack()}
 				style={styles.backButtonContainer}
 			>
-				<Icon name="arrow-left" solid style={styles.backButtonIcon} />
+				<Icon name="arrow-left" solid style={styles.backButtonIcon} color={theme.color} />
 			</Pressable>
 			<Image source={{ uri: urlToImage }} style={styles.boxImage} />
-			<Text style={styles.heading}>{title}</Text>
+			<Text style={[styles.heading,{color:theme.color}]}>{title}</Text>
 			<View style={styles.metaBox}>
 				<View style={styles.subBox}>
-					<Icon name="user" solid style={styles.iconStyle} />
-					<Text>{author}</Text>
+					<Icon name="user" solid style={styles.iconStyle} color={theme.color} />
+					<Text style={{color:theme.color}}>{author}</Text>
 				</View>
 				<View style={styles.subBox}>
-					<Icon name="calendar-alt" solid style={styles.iconStyle} />
-					<Text>{publishedAt}</Text>
+					<Icon name="calendar-alt" solid style={styles.iconStyle} color={theme.color} />
+					<Text style={{color:theme.color}}>{publishedAt}</Text>
 				</View>
 			</View>
-			<Text style={styles.content}>{content}</Text>
+			<Text style={[styles.content,{color:theme.color}]}>{content}</Text>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
+	container: {
+		paddingVertical: 15,
+		flex:1
+   },
 	backButtonContainer: {
 		position: "absolute",
 		top: 10,
@@ -57,7 +64,6 @@ const styles = StyleSheet.create({
 	},
 	backButtonIcon: {
 		fontSize: 23,
-		color: "#eee",
 	},
 	boxImage: {
 		width: "100%",

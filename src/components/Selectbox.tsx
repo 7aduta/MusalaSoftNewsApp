@@ -1,5 +1,5 @@
 import {transform} from '@babel/core';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import {
    StyleSheet,
    Text,
@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Colors} from '../constants/styleConstants';
+import { ThemeContext } from '../constants/theming';
 const {height} = Dimensions.get('screen');
 interface ISelectbox {
    label: string;
@@ -35,6 +36,8 @@ const Selectbox: FC<ISelectbox> = ({
    showArrow = true,
    onChange,
 }) => {
+  	const { theme } = useContext(ThemeContext);
+
    const [state, setstate] = useState({
       slide: new Animated.Value(0),
       visible: false,
@@ -121,7 +124,7 @@ const Selectbox: FC<ISelectbox> = ({
                      {state.value ? state.value : label}
                   </Text>
                   {showArrow && (
-                     <Icon name="sort-down" size={20} color={Colors.grayDark} />
+                     <Icon name="sort-down" size={20} color={theme.color} />
                   )}
                </View>
             </TouchableOpacity>
@@ -140,7 +143,7 @@ const styles = StyleSheet.create({
    },
    selectBoxContent: {
       paddingVertical: 23,
-      paddingHorizontal: 20,
+
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',

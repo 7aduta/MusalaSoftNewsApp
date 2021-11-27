@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import {
 	StyleSheet,
 	View,
@@ -12,9 +12,13 @@ import { Colors } from "../constants/styleConstants";
 import { GetHomeNewsHandler } from "../store/actions/news";
 import {useDispatch} from 'react-redux';
 import { SaveLang } from "../store/actions/settings";
+import { ThemeContext } from '../constants/theming';
+
 const Settings: FC =  () => {
 	const { t, i18n } = useTranslation();
 	const dispatch = useDispatch()
+	    const { dark, theme, toggle } = useContext(ThemeContext);
+
 	const [state, setstate] = useState({
       languages: [
          {dir: 'rtl', code: 'es', label: 'Spanish'},
@@ -28,8 +32,25 @@ const Settings: FC =  () => {
 		dispatch(GetHomeNewsHandler())
    };
 	return (
-		<View style={styles.container}>
-			
+		<View style={[styles.container,{backgroundColor: theme.backgroundColor}]}>
+			<View style={styles.settingsBox}>
+				<View style={{}}>
+					<Text style={{
+						fontSize: 20,
+						color: theme.color
+					}}>{t('Status')}</Text>
+				</View>
+				<Switch
+					isActive={!dark}
+					onValueChange={status => {
+						toggle()
+					}}
+					contentContainerStyle={{
+						borderWidth: 1,
+						height: 22,
+					}}
+				/>
+			</View>
 			<View style={styles.settingsBox}>
 				<Selectbox
 					label={t('Language')}
@@ -41,6 +62,7 @@ const Settings: FC =  () => {
 					}}
 					TextStyle={{
 						fontSize: 20,
+						color: theme.color,
 					}}
 					showArrow={true}
 					onselected={ret => {
@@ -56,7 +78,8 @@ const styles = StyleSheet.create({
 	container: {
       backgroundColor: Colors.white,
       paddingHorizontal: 20,
-      paddingVertical: 15,
+		paddingVertical: 15,
+		flex:1
    },
 settingsBox: {
       flexDirection: 'row',
